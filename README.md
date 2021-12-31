@@ -7,4 +7,6 @@ This project consists on a basic complete stack that for any Machine Learning pr
 - Markov chains as the model structure
 - Docker compose to host the forementioned items
 
-Run docker-boot-clean.sh and you are good to go! If you want to drop/reset the tables, there are some scripts to do so under `src/dockerscripts` or `src/utils/sql`
+Run docker-boot-clean.sh and you are good to go! Open localhost:80 and there you'll be able to play
+
+If you want to drop/reset the tables, there are some scripts to do so under `src/dockerscripts` or `src/utils/sql`
