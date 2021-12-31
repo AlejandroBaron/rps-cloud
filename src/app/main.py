@@ -126,4 +126,4 @@ if __name__ == '__main__':
 
     port = os.environ['PORT']
 
-    pywebio.start_server([index, rps, stats, about], port=os.) 
+    pywebio.start_server([index, rps, stats, about], port=port) 
