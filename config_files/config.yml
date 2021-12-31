@@ -4,8 +4,9 @@ credentials:
 
 connection:
   db : "rpsdb"
-  host: "db"
-  port: "5432"
+  host: $DATABASE_URL 
+  port: $PORT
 
 bot:
   depth: 2
+

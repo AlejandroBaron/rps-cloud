@@ -31,17 +31,13 @@ def get_initial_records() -> list[dict]:
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config_file',
-                        type=str,
-                        default='config_files/config.yml', required=False,
-                        help='Path to configuration file')
 
     args = parser.parse_args()
 
     
     try:
         
-        connection = connect_to_db(args.config_file)
+        connection = connect_to_db()
         cursor = connection.cursor()
 
 
