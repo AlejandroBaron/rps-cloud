@@ -11,11 +11,6 @@ def connect_to_db() -> psycopg2.extensions.connection:
         psycopg2.Connection: connection to the database
     """
 
-
-
-    with open(config_file) as file:
-        configuration = yaml.full_load(file)
-
     url = urlparse.urlparse(os.environ['DATABASE_URL'])
     dbname = url.path[1:]
     user = url.username
