@@ -1,5 +1,4 @@
 import sys 
-import argparse
 sys.path.insert(1,'../')
 
 import psycopg2
@@ -10,7 +9,8 @@ import yaml
 
 from src.utils.game import rules
 from src.utils.sql.connections import connect_to_db
-from src.utils.sql.queries import drop_table, check_for_table
+from src.utils.sql.queries import init_rounds_table, check_for_table
+
 
 
 if __name__=="__main__":
@@ -30,21 +30,21 @@ if __name__=="__main__":
     if args.depth is None:
         with open(args.config_file) as file:
             args.depth = yaml.full_load(file)["bot"]["depth"]
-
-
+    
     try:
         
         connection = connect_to_db(args.config_file)
         cursor = connection.cursor()
 
-        if not check_for_table(cursor, f"statistics"):
-            raise ValueError("Table does not exist")
 
-        drop_table(cursor, f"statistics")
+        if check_for_table(cursor, f"rounds"):
+            raise ValueError("Table already exists")
+
+        init_rounds_table(cursor)
         print("Success!")
 
     except (Exception, psycopg2.Error) as error:
-        print("Error while dropping table: ", error)
+        print("Error while initializing table: ", error)
 
     finally:
         # closing database connection.

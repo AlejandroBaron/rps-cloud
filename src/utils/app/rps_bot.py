@@ -42,3 +42,13 @@ class RPSBot:
 
         
         self.cursor.execute(query)
+
+    def save_round(self, game_id, user_move, bot_move, outcome, depth):
+        
+        query = f"INSERT INTO rounds VALUES ('{game_id}','{user_move}','{bot_move}','{outcome}',{depth})"
+        
+        self.cursor.execute(query)
+        self.cursor.execute("SELECT * FROM rounds")
+
+        print(self.cursor.fetchall())
+

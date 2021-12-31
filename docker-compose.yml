@@ -23,6 +23,8 @@ services:
       - ./app:/app
       - "./config_files:/config_files"
 
+    depends_on:
+      - "db"
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     ports:

@@ -66,3 +66,19 @@ def init_stats_table(cursor: psycopg2.extensions.cursor, initial_records: list[d
     # Now, populate the tabl
     query = f"INSERT INTO statistics"+ " VALUES (%(Depth)s, %(W)s, %(T)s, %(L)s)"
     cursor.executemany(query, initial_records)
+
+
+def init_rounds_table(cursor: psycopg2.extensions.cursor):
+    """Inits and populates the transition matrix for the desired table
+
+    Args:
+        cursor (psycopg2.extensions.cursor): cursor pointing to the database
+    """
+
+    # FiCreate the transition matrix table for the specified depth
+    query = f'''CREATE TABLE IF NOT EXISTS rounds (GameId VARCHAR NOT NULL,
+                                                   Player VARCHAR NOT NULL,
+                                                   Bot VARCHAR NOT NULL,
+                                                   Outcome VARCHAR NOT NULL,
+                                                   Depth INTEGER NOT NULL)'''
+    cursor.execute(query)

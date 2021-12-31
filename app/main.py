@@ -3,6 +3,7 @@ import argparse
 import yaml
 sys.path.insert(1,'../')
 
+import uuid
 
 # PyWebIO imports
 import pywebio
@@ -48,6 +49,8 @@ def rps():
     
     rps_bot = RPSBot(cursor)
 
+    game_id = uuid.uuid4()
+
     while True:
 
         depth = np.random.randint(5, size=1)[0]+1
@@ -64,6 +67,7 @@ def rps():
             put_text(f'User: {user_action}')
             put_text(f'Bot: {bot_action}')
             put_text(f'{FORMATTED_OUTCOME[outcome]}')
+            
             
             if outcome=="W":
                 count["User"] = count["User"] + 1
@@ -83,6 +87,11 @@ def rps():
             user_hist.append(user_action)
         
         rps_bot.update_statistics(depth, outcome)
+        rps_bot.save_round(game_id=game_id, 
+                            user_move=user_action,
+                            bot_move=bot_action,
+                            outcome=outcome,
+                            depth=depth)
 
 def stats():
 

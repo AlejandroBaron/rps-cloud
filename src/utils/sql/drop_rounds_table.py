@@ -20,27 +20,19 @@ if __name__=="__main__":
                         type=str,
                         default='config_files/config.yml', required=False,
                         help='Path to configuration file')
-    parser.add_argument('-d', '--depth',
-                        type=int,
-                        required=False,
-                        help='Depth of history in transition matrix')
+
 
     args = parser.parse_args()
-
-    if args.depth is None:
-        with open(args.config_file) as file:
-            args.depth = yaml.full_load(file)["bot"]["depth"]
-
 
     try:
         
         connection = connect_to_db(args.config_file)
         cursor = connection.cursor()
 
-        if not check_for_table(cursor, f"statistics"):
+        if not check_for_table(cursor, f"rounds"):
             raise ValueError("Table does not exist")
 
-        drop_table(cursor, f"statistics")
+        drop_table(cursor, f"rounds")
         print("Success!")
 
     except (Exception, psycopg2.Error) as error:
