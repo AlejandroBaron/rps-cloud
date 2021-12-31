@@ -1,1 +1,1 @@
-worker: src/app_management/fire_webserver_up.sh
+web: src/app_management/fire_webserver_up.sh

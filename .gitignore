@@ -1,4 +1,4 @@
-app/assets/*
+
 __pycache__/
 
 # Ignore application files
@@ -10,6 +10,7 @@ node_modules
 # .tfstate files
 *.tfstate
 *.tfstate.*
+.terraform.lock.hcl
 
 # Crash log files
 crash.log

@@ -1,8 +1,8 @@
 provider "heroku" {}
 
 resource "heroku_app" "rps" {
-  name   = "playrps:latest"
-  region = "eu"
+  name   = "alexbaronrps"
+  region = "us"
 }
 
 resource "heroku_addon" "postgres" {
@@ -12,12 +12,14 @@ resource "heroku_addon" "postgres" {
 
 resource "heroku_build" "rps" {
   app = heroku_app.rps.id
-  #heroku_app.rps.web_url
   source {
     path = "."
   }
 }
-
+variable "app_quantity" {
+  default     = 1
+  description = "Number of dynos in your Heroku formation"
+}
 # Launch the app's web process by scaling-up
 resource "heroku_formation" "rps" {
   app        = heroku_app.rps.id
