@@ -1,0 +1,11 @@
+credentials:
+  user :  "rps_admin"
+  password : "rps_pass"
+
+connection:
+  db : "rpsdb"
+  host: "db"
+  port: "5432"
+
+bot:
+  depth: 2
