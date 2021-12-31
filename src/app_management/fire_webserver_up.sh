@@ -1,5 +1,5 @@
 echo "Populating transition matrices"
-source src/dockerscripts/populate_tables.sh
+source src/app_management/populate_tables.sh
 
 echo "Initializing stats table"
 python3 ./src/utils/sql/init_stats_table.py

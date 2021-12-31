@@ -124,5 +124,6 @@ if __name__ == '__main__':
     connection = connect_to_db()
     cursor = connection.cursor()
 
+    port = os.environ['PORT']
 
-    pywebio.start_server([index, rps, stats, about], port=80, debug=True) 
+    pywebio.start_server([index, rps, stats, about], port=os.) 
