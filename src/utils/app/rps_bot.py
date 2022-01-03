@@ -51,17 +51,28 @@ class RPSBot:
 
         self.cursor.execute(f"SELECT R,P,S FROM transitionmatrix{len(user_hist)} WHERE Hist='{''.join(user_hist)}'")
         
-        stored_outcomes = self.cursor.fetchall()[0]
-        recent_outcomes = self.recent_matrix[tuple(user_hist)]
+        try:
+            stored_outcomes = self.cursor.fetchall()[0]
         
-        n_stored_outcomes = sum(stored_outcomes)
-        n_recent_outcomes = sum(recent_outcomes)
+            recent_outcomes = self.recent_matrix[tuple(user_hist)]
+            
+            n_stored_outcomes = sum(stored_outcomes)
+            n_recent_outcomes = sum(recent_outcomes)
 
-        next_move_stored_probs = np.array([po/n_stored_outcomes for po in stored_outcomes])
-        next_move_recent_probs = np.array([po/n_recent_outcomes for po in recent_outcomes])
+            next_move_stored_probs = np.array([po/n_stored_outcomes for po in stored_outcomes])
+            next_move_recent_probs = np.array([po/n_recent_outcomes for po in recent_outcomes])
 
-        next_move_probabilities = self.past_weight * next_move_stored_probs + (1-self.past_weight) * next_move_recent_probs
-        player_prediction = np.random.choice(rules.MOVES, 1,  p=next_move_probabilities)[0]
+            next_move_probabilities = self.past_weight * next_move_stored_probs + (1-self.past_weight) * next_move_recent_probs
+            player_prediction = np.random.choice(rules.MOVES, 1,  p=next_move_probabilities)[0]
+
+        except:
+            
+            recent_outcomes = self.recent_matrix[tuple(user_hist)]
+            n_recent_outcomes = sum(recent_outcomes)
+            next_move_probabilities = np.array([po/n_recent_outcomes for po in recent_outcomes])
+            player_prediction = np.random.choice(rules.MOVES, 1,  p=next_move_probabilities)[0]
+
+
 
         self.past_weight = min(self.past_weight*0.99,0.25)
         
