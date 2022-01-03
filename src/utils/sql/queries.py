@@ -80,5 +80,6 @@ def init_rounds_table(cursor: psycopg2.extensions.cursor):
                                                    Player VARCHAR NOT NULL,
                                                    Bot VARCHAR NOT NULL,
                                                    Outcome VARCHAR NOT NULL,
-                                                   Depth INTEGER NOT NULL)'''
+                                                   Depth INTEGER NOT NULL,
+                                                   Platform VARCHAR NOT NULL)'''
     cursor.execute(query)

@@ -21,7 +21,7 @@ def get_initial_records() -> list[dict]:
     
     initial_counts = {m:0 for m in rules.OUTCOMES}
     
-    transition_matrix_records = [{**{"Depth":d}, **initial_counts} for d in range(1,6)]
+    transition_matrix_records = [{**{"Depth":d}, **initial_counts} for d in range(1,5)]
 
     return transition_matrix_records
 

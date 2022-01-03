@@ -66,6 +66,22 @@ class StatsChecker:
 
         return [{"Depth":D, "User Wins":W, "Ties":T, "Bot Wins":L} for D,W,T,L in rows]
 
+    def winrate_per_platform(self):
+        
+        query = f"""SELECT Platform, Outcome, COUNT(*) FROM rounds GROUP BY Platform, Outcome"""
+
+        self.cursor.execute(query)
+
+        rows =  self.cursor.fetchall()
+        counts = {(plat, outcome):count for plat, outcome, count in rows if outcome != "T"}#remove Ties
+
+        mobile_rounds = max(counts[("Mobile","W")] + counts[("Mobile","L")],1)
+        desktop_rounds = max(counts[("Desktop","W")]  + counts[("Desktop","L")],1)
+
+        return {"Mobile": round(counts[("Mobile","L")]/mobile_rounds*100,2),
+                "Desktop":  round(counts[("Desktop","L")]/desktop_rounds*100,2)}
+
+
     def get_transition_matrix(self, depth=2, as_pandas=True, as_probs=True):
         """
         Gets the transition matrix for the specified depth
@@ -117,7 +133,7 @@ class StatsChecker:
         
         return fig
 
-    
+
     def get_piechart(self, plot_name: str, as_html=False, **kwargs):
         """Returns the specified chart under plot_name
 
@@ -128,7 +144,6 @@ class StatsChecker:
         Returns:
             plotly piechart
         """
-
         
         data = {"outcomes": self.outcome_counts,
                 "winrate": self.win_loss_counts,
@@ -137,6 +152,14 @@ class StatsChecker:
         plot_data = data[plot_name]()
 
         plot = self.__piechart_plot(plot_data.keys(), plot_data.values(), **kwargs)
+        return to_html(plot) if as_html else plot
+
+    def winrate_per_platform_barplot(self,  as_html=False, **kwargs):
+
+        wpp = self.winrate_per_platform()
+
+        plot = go.Bar(x=list(wpp.keys()), y=list(wpp.values()), **kwargs)
+
         return to_html(plot) if as_html else plot
 
     def transition_matrix_plot(self):
@@ -167,22 +190,43 @@ class StatsChecker:
         
         return html
 
-    def report_plots(self):
+    def report_plots(self, mobile=False):
         """
-        Get report plots for 'Game outcomes',  'User moves','Winrate (exc. Ties)'
+        Get report plots for 'Game outcomes',  'User moves','Winrate (exc. Ties)',  'Winrate % per platform'
         """
 
-        fig = make_subplots(rows=1, cols=3, 
-                            specs=[[{"type": "pie"}, {"type": "pie"}, {"type": "pie"}]],
-                            subplot_titles=('Game outcomes',  'User moves','Winrate (exc. Ties)'))
+        traces = [self.get_piechart("outcomes", legendgroup='1', name="Outcomes", textinfo='value'),
+                  self.get_piechart("moves", legendgroup='2', name="Moves", textinfo='value'),
+                  self.get_piechart("winrate", legendgroup='3', name="Win vs Losses"),
+                  self.winrate_per_platform_barplot(legendgroup='4', name="Platf.<br>Winrate")]
 
-        fig.add_trace(self.get_piechart("outcomes", legendgroup='1', name="Outcomes", textinfo='value'), row=1, col=1)
+        if not mobile:
 
-        fig.add_trace(self.get_piechart("moves", legendgroup='2', name="Moves", textinfo='value'), row=1, col=2)
+            fig = make_subplots(rows=2, cols=2, 
+                                specs=[[{"type": "pie"}, {"type": "pie"}],
+                                       [{"type": "pie"}, {"type": "bar"}]],
+                                subplot_titles=('Game outcomes',  'User moves','Winrate (exc. Ties)', 'Winrate per platform'))
 
-        fig.add_trace(self.get_piechart("winrate", legendgroup='3', name="Win vs Losses"), row=1, col=3)
+            fig.add_trace(traces[0], row=1, col=1)
+            fig.add_trace(traces[1], row=1, col=2)
+            fig.add_trace(traces[2], row=2, col=1)
+            fig.add_trace(traces[3], row=2, col=2)
 
-        html = to_html(fig, include_plotlyjs="require", full_html=False)
+            html = to_html(fig, include_plotlyjs="require", full_html=False)
+
+        elif mobile:
+            fig = make_subplots(rows=4, cols=1, 
+                                specs=[[{"type": "pie"}],
+                                       [{"type": "pie"}],
+                                       [{"type": "pie"}],
+                                       [{"type": "bar"}]],
+                                subplot_titles=('Game outcomes',  'User moves','Winrate (exc. Ties)', 'Winrate per platform'))
+
+            for i,trace in enumerate(traces):
+                fig.add_trace(traces[i], row=i+1, col=1)
+
+            html = to_html(fig, include_plotlyjs="require", full_html=False)
+
         return html
     
     
