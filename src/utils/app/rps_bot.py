@@ -39,7 +39,15 @@ class RPSBot:
         self.depth = depth
         self.recent_matrix = initial_records(depth)
 
-    def make_choice(self, user_hist):
+    def make_choice(self, user_hist: list) -> str:
+        """Decides what move to make based on user history
+
+        Args:
+            user_hist (list): user past history
+
+        Returns:
+            str: next move to make
+        """
 
         self.cursor.execute(f"SELECT R,P,S FROM transitionmatrix{len(user_hist)} WHERE Hist='{''.join(user_hist)}'")
         
@@ -60,15 +68,24 @@ class RPSBot:
 
         return rules.WINNING_MOVE[player_prediction]
 
-    def update_database(self, user_hist, user_move):
-        
+    def update_database(self, user_hist: list, user_move: str):
+        """
+        Increments the database count for the pair (user_hist, user_move)
+        """
+
         query = f"""UPDATE transitionmatrix{len(user_hist)}
                     SET {user_move} = {user_move} + 1
                     WHERE Hist='{''.join(user_hist)}' """
         
         self.cursor.execute(query)
 
-    def update_recent_matrix(self, user_hist, user_move):
+    def update_recent_matrix(self, user_hist: list, user_move: str):
+        """Updates the recent matrix database
+
+        Args:
+            user_hist (list): list containing user history
+            user_move (str): next user_move
+        """
 
         increase = {"R": np.array([1,0,0]),
                     "P": np.array([0,1,0]),
@@ -78,6 +95,9 @@ class RPSBot:
 
 
     def update_statistics(self, depth, outcome):
+        """
+        Updates the statistic table
+        """
         
         query = f"""UPDATE statistics
                     SET {outcome} = {outcome} + 1
@@ -86,7 +106,17 @@ class RPSBot:
         
         self.cursor.execute(query)
 
-    def save_round(self, game_id, user_move, bot_move, outcome, depth, platform):
+    def save_round(self, game_id:str, user_move: list, bot_move: str, outcome: str, depth: int, platform: str):
+        """Stores the following info about each round
+
+        Args:
+            game_id (str): unique id representing this round
+            user_move (list): move selected by the user
+            bot_move (str): move performed by the bot
+            outcome (str): outcome of the round
+            depth (int): history depth used by the bot
+            platform (str): mobile or desktop
+        """
         
         query = f"INSERT INTO rounds VALUES ('{game_id}','{user_move}','{bot_move}','{outcome}',{depth}, '{platform}')"
         
