@@ -25,7 +25,7 @@ def initial_records(depth: int) -> dict:
         possible_combinations = rules.MOVES
 
     transition_matrix_records = {tuple(sequence):initial_counts for sequence in possible_combinations}
-    print(transition_matrix_records)
+
     return transition_matrix_records
 
 
