@@ -7,7 +7,7 @@ This project consists on a basic complete stack that for any Machine Learning pr
 - PostgreSQL database to store metrics and model information
 - PyWebIO as the web serving and interface building
 - Markov chains as the model structure
-- Terraform as IaaC tool for cloud deployments, and Heroku as cloud provider
+- Terraform as IaC tool for cloud deployments, and Heroku as cloud provider
 
 Run docker-boot-clean.sh and you are good to go! Open localhost:80 and there you'll be able to play
 
